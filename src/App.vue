@@ -49,13 +49,30 @@
           </div>
         </div>
 
-        <div class=" mt-12 flex flex-col justify-center items-center text-center gap-8 max-w-md p-5">
+        <!-- display message here -->
+        <div v-if="diff <= 0" class=" mt-12 flex flex-col justify-center items-center text-center gap-8 max-w-md p-5">
+          <h2 class=" text-5xl font-bold ">It's Launch Day!</h2>
+          <p>Thank you for joining the waitlist! We're excited to have you on board. Stay tuned for exclusive updates and notifications as we approach the launch date. If you have any questions, feel free to reach out to us.</p>
+        </div>
+        
+        <div v-if="!isNewUser && !isAlreadyUser" class=" mt-12 flex flex-col justify-center items-center text-center gap-8 max-w-md p-5">
           <h2 class=" text-5xl font-bold ">It's almost time!</h2>
-          <p>Join the waitlist and be part of the excitement: Receive Exclusive Launch Updates and Notifications</p>
-          <form class="flex flex-row gap-3 text-[14px]">
-            <input class="p-4 bg-white bg-opacity-10 text-white border-none outline-none md:w-[300px] rounded-md" placeholder="Your Email Address..."/>
-            <button class=" bg-[#47C67F] rounded-md px-6 text-nowrap">Join Waitlist</button>
+          <p class="">Join the waitlist and be part of the excitement: Receive Exclusive Launch Updates and Notifications</p>
+          <form @submit.prevent="addUserToWaitlist" class="flex flex-row gap-3 text-[14px]">
+            <input v-model="email" class="p-4 bg-white bg-opacity-10 text-white border-none outline-none md:w-[300px] rounded-md" placeholder="Your Email Address..." required/>
+            <button class=" bg-[#47C67F] rounded-md px-6 text-nowrap disabled:bg-gray-500 flex flex-row justify-center items-center" :disabled="loading">
+              <span> <span v-if="loading" class=" spinner"></span>Join Waitlist</span>
+            </button>
           </form>
+        </div>
+          
+        <div data-aos="fade-up" data-aos-delay="300" v-if="isNewUser" class="mt-12 flex flex-col justify-center items-center text-center gap-8 max-w-md p-5">
+          <h2 class="text-5xl font-bold">You're in! 🎉</h2>
+          <p>Thank you for joining the waitlist! We're excited to have you on board. Stay tuned for exclusive updates and notifications as we approach the launch date. If you have any questions, feel free to reach out to us.</p>
+        </div>
+        <div data-aos="fade-up" data-aos-delay="300" v-if="isAlreadyUser" class="mt-12 flex flex-col justify-center items-center text-center gap-8 max-w-md p-5">
+          <h2 class="text-5xl font-bold">You're Already in! 🎉</h2>
+          <p class=" m-0 p-0">We're excited to have you on board. Stay tuned for exclusive updates and notifications as we approach the launch date. If you have any questions, feel free to reach out to us.</p>
         </div>
        
       </div>
@@ -95,6 +112,7 @@
 <script>
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import axios from 'axios';
 
   export default {
     data(){
@@ -105,8 +123,17 @@ import 'aos/dist/aos.css'
         minutes: 0,
         seconds: 0,
 
-        diff: null,
-        timer: ''
+        diff: 9,
+        timer: '',
+
+        email: '',
+        loading: false,
+
+        isNewUser: false,
+        isAlreadyUser: false,
+
+        api_url: 'https://whasell-api.onrender.com',
+        // api_url: 'https://whasell-api.onrender.com',
         
       }
     },
@@ -125,6 +152,25 @@ import 'aos/dist/aos.css'
         this.seconds = Math.floor((diff / 1000) % 60);
       
         // return { days, hours, minutes, seconds };
+      },
+
+
+      async addUserToWaitlist(){
+        try{
+          this.loading = true;
+          const response = await axios.post(`${this.api_url}/api/waitlist`, {
+            email: this.email });
+            if(response.status === 201){
+              this.isNewUser = true;
+            } else if(response.status === 200){
+              this.isAlreadyUser = true;
+            }
+            console.log(response.data);
+            this.loading = false;
+        }catch(error){
+          console.log(error);
+          this.loading = false;
+        }
       },
 
       
@@ -163,4 +209,26 @@ import 'aos/dist/aos.css'
 .time_box{
   @apply flex flex-col gap-2 bg-white bg-opacity-10  p-8 max-h-40 rounded-lg border border-opacity-10 border-white
 }
+
+.spinner {
+    border: 3px solid #999999;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    margin-right: 5px;
+    animation: rotation 0.6s linear infinite;
+}
+.spinner{
+    @apply relative top-[0.8] left-auto right-auto bottom-auto size-[15px]
+}
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    } 
 </style>
