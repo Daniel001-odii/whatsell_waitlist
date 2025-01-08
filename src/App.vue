@@ -89,7 +89,7 @@
             <p>WhatSell changes the game. It’s your go-to platform to simplify and supercharge WhatsApp commerce.</p>
             <ol class=" flex flex-col gap-3 md:ml-8 list-disc">
               <li><b>For Vendors:</b> List products, showcase with videos (Glips), auto-post to social media, and connect with buyers beyond your contact list. Want more reach? Sponsor listings or boost your shop with ease.</li>
-              <li><b>For Vendors:</b> Quickly find trusted vendors near you, browse products, watch demos, and chat directly with vendors on WhatsApp</li>
+              <li><b>For Buyers:</b> Quickly find trusted vendors near you, browse products, watch demos, and chat directly with vendors on WhatsApp</li>
             </ol>
             <p>WhatSell bridges the gap, making buying and selling easy, fast, and effective.</p>
           </div>
